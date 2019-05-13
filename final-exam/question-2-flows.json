@@ -1,0 +1,181 @@
+[
+    {
+        "id": "78418237.73920c",
+        "type": "tab",
+        "label": "ICE Capstone Exam",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "e7956dce.15a02",
+        "type": "e-mail",
+        "z": "78418237.73920c",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "jakpat.m@gmail.com",
+        "dname": "",
+        "x": 740,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "d61725c5.691618",
+        "type": "mqtt in",
+        "z": "78418237.73920c",
+        "name": "",
+        "topic": "Tony/sensor/temperature",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "2f688ff6.068d7",
+        "x": 170,
+        "y": 320,
+        "wires": [
+            [
+                "2e88b0ed.860e3"
+            ]
+        ]
+    },
+    {
+        "id": "3c75a319.55d13c",
+        "type": "inject",
+        "z": "78418237.73920c",
+        "name": "",
+        "topic": "Tony/sensor/heartrate",
+        "payload": "200",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 480,
+        "wires": [
+            [
+                "f2334764.6a3968",
+                "2e88b0ed.860e3"
+            ]
+        ]
+    },
+    {
+        "id": "2e88b0ed.860e3",
+        "type": "debug",
+        "z": "78418237.73920c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 450,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "f2334764.6a3968",
+        "type": "function",
+        "z": "78418237.73920c",
+        "name": "parse data",
+        "func": "context.data = context.data || {};\nlet heartrate = null;\n\nswitch(msg.topic) {\n    case \"Tony/sensor/heartrate\":\n        heartrate = parseFloat(msg.payload);\n        break;\n    case \"Tony/sensor/temperature\":\n        context.data.temperature = msg.payload;\n        break;\n}\n\nif (heartrate !== null && heartrate > 235) {\n    return {\n        topic: \"Alert -- high heart rate\",\n        payload: `timestamp: ${Date.now()}\nheart rate: ${heartrate}\ntemperature: ${context.data.temperature}\n\nJakpat Mingmongkolmitr 5931217221\n`\n    };\n}\n\nreturn;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 240,
+        "wires": [
+            [
+                "78a94c6.32531b4",
+                "e7956dce.15a02",
+                "106d737a.decbad"
+            ]
+        ]
+    },
+    {
+        "id": "78a94c6.32531b4",
+        "type": "debug",
+        "z": "78418237.73920c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 710,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "b7e0611c.030d",
+        "type": "inject",
+        "z": "78418237.73920c",
+        "name": "",
+        "topic": "Tony/sensor/heartrate",
+        "payload": "300",
+        "payloadType": "str",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 170,
+        "y": 560,
+        "wires": [
+            [
+                "f2334764.6a3968",
+                "2e88b0ed.860e3"
+            ]
+        ]
+    },
+    {
+        "id": "6fec050e.cda35c",
+        "type": "mqtt in",
+        "z": "78418237.73920c",
+        "name": "",
+        "topic": "Tony/sensor/heartrate",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "2f688ff6.068d7",
+        "x": 180,
+        "y": 240,
+        "wires": [
+            [
+                "2e88b0ed.860e3"
+            ]
+        ]
+    },
+    {
+        "id": "106d737a.decbad",
+        "type": "e-mail",
+        "z": "78418237.73920c",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "mpipatta@vt.edu",
+        "dname": "",
+        "x": 730,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "2f688ff6.068d7",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "HiveMQ",
+        "broker": "broker.mqttdashboard.com",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
